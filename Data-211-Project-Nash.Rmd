@@ -1,0 +1,42 @@
+---
+title: "Project"
+author: "Zachary Nash"
+date: "2024-12-12"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(tinytex)
+library(plotly)
+library(DT)
+library(dplyr)
+library(tm)
+library(wordcloud)
+library(readxl)
+```
+Reasoning - there are different circumstances in my step count, I might go on a two day study spree where I barely move. In comparison, when i work the conditions are typically consistent
+```{r}
+steps <- read_excel("C:/Users/zknas/Downloads/StepsWorkVSOff.xlsx")
+```
+$H_0: \mu_{host} = \mu_{off}$ $H_a: \mu_{host} > \mu_{off}$
+```{r}
+stepsBO<-steps%>%
+  filter(Shift!="Busser")%>%
+  select(Steps,Shift)
+
+t.test(Steps~Shift,data=stepsBO,alternative='greater')
+```
+Since the p-value ended up being .1226, greater than 0.05, we reject the null hypothesis. There is not significant evidence to back the claim that the mean number of steps taken on days when I work as a restaurant host is greater than the mean number of steps taken on days when I do not work altogether.
+
+```{r}
+mapsteps<-stepsBO%>%
+  ggplot(aes(x=Shift,y=Steps))+geom_boxplot(aes(fill = 'brown'))
+mapsteps
+```
+
